@@ -1,0 +1,35 @@
+#ifndef BUFFER1_H_
+#define BUFFER1_H_ 
+#include <queue>
+#include <iostream>
+#include "MutexLock.h"
+#include "Condition.h"
+using namespace std; 
+class Buffer 
+{
+public:
+    Buffer(size_t size) 
+        :pro_(mutex_), cond_(mutex_), maxSize_(size) 
+    {  } ;
+    ~Buffer()
+    {
+        
+    }
+    void lock() { mutex_.lock(); }
+    void unlock() { mutex_.unlock() }
+    bool full() { return maxSize_ == q_.size();  }
+    bool empty() { return q_.size() == 0; }
+    void push() { q_.push(rand() % 100); }
+    void pop() { q_.pop(); }
+    void wait_pro() { pro_.wait(); } 
+    
+private:
+    size_t maxSize_;
+    MutexLock mutex_ ;
+    Condition pro_ ;
+    Condition cond_ ;
+    std::queue<int> q_ ;
+
+} ;
+
+#endif  /*BUFFER_H_*/
